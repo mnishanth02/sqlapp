@@ -3,25 +3,19 @@ using System.Data.SqlClient;
 
 namespace sqlapp.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
+        private readonly IConfiguration _configuration;
 
-        private static string db_source = "appservernm.database.windows.net";
-        private static string db_user = "mnishanth02";
-        private static string db_password = "Mn_pass@2022";
-        private static string db_database = "demodatabase01";
-
-
+        ProductService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         private SqlConnection GetConnection()
         {
-            var _builder = new SqlConnectionStringBuilder();
 
-            _builder.DataSource = db_source;
-            _builder.UserID = db_user;
-            _builder.Password = db_password;
-            _builder.InitialCatalog = db_database;
-            return new SqlConnection(_builder.ConnectionString);
+            return new SqlConnection(_configuration.GetConnectionString("SQLConnection"));
         }
 
         public List<Product> GetProducts()
@@ -48,12 +42,12 @@ namespace sqlapp.Services
                     };
                     _product_list.Add(product);
                 }
-             
+
             }
             conn.Close();
             return _product_list;
         }
-        
+
 
     }
 }
